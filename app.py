@@ -115,7 +115,7 @@ with c1:
                   color_discrete_map=COLORES, text=anual["pct"].round(0).astype(int).astype(str) + "%",
                   labels={"anio": "Año", "pct": "% de contratos", "grupo_modalidad": "Grupo"},
                   title="Participación por grupo de modalidad y año")
-    fig1.update_layout(legend=dict(orientation="h", y=-0.2), xaxis=dict(type="category"), height=420)
+    fig1.update_layout(legend=dict(orientation="h", y=-0.2), xaxis=dict(type="category", categoryorder="category ascending"), height=420)
     st.plotly_chart(fig1, width="stretch")
 
 with c2:
