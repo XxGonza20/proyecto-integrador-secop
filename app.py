@@ -14,7 +14,9 @@ import streamlit as st
 
 st.set_page_config(page_title="Contratación pública Boyacá", page_icon="📑", layout="wide")
 
-RUTA = Path(__file__).parent / "data" / "contratos_limpio.parquet"
+BASE = Path(__file__).parent
+RUTA = next((p for p in [BASE / "data" / "contratos_limpio.parquet", BASE / "contratos_limpio.parquet"] if p.exists()),
+               BASE / "data" / "contratos_limpio.parquet")
 ORDEN = ["Directa", "Régimen especial", "Competitiva"]
 COLORES = {"Directa": "#d1495b", "Régimen especial": "#edae49", "Competitiva": "#00798c"}
 VENTANAS_LG = [("2022-01-29", "2022-06-19"), ("2026-01-31", "2026-06-21")]
