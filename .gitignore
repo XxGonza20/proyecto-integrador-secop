@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+.ipynb_checkpoints/
+data/stream_entrada/
+data/stream_checkpoint/
+# El CSV crudo (~85 MB) se descarga con: python descargar_datos.py
+data/secop_boyaca_2022_2026.csv
