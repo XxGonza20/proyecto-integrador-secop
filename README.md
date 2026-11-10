@@ -26,11 +26,17 @@ Proyecto Integrador · Big Data 2026-2 · Universidad Santo Tomás – Seccional
 ├── proyecto_integrador_secop.ipynb   # Notebook ejecutado de principio a fin
 ├── app.py                            # Dashboard en Streamlit
 ├── descargar_datos.py                # Descarga el CSV desde la API de datos.gov.co
+├── contratos_limpio.parquet          # Dataset limpio que usa el dashboard
 ├── requirements.txt
-├── README.md
-└── data/
-    ├── secop_boyaca_2022_2026.csv    # Dataset crudo (lo genera descargar_datos.py)
-    └── contratos_limpio.parquet      # Dataset limpio (lo genera el notebook; lo usa el dashboard)
+└── README.md
+```
+
+Al ejecutar en local, el notebook trabaja con la carpeta `data/`:
+
+```
+data/
+├── secop_boyaca_2022_2026.csv        # Dataset crudo (lo genera descargar_datos.py; no se sube por su tamaño)
+└── contratos_limpio.parquet          # Dataset limpio (lo genera el notebook, sección 4)
 ```
 
 ## Temáticas aplicadas
@@ -63,7 +69,23 @@ jupyter nbconvert --to notebook --execute --inplace proyecto_integrador_secop.ip
 streamlit run app.py
 ```
 
-**MongoDB:** el notebook se conecta a `mongodb://localhost:27017` o al valor de la variable de entorno `MONGO_URI` (por ejemplo, un clúster de MongoDB Atlas). Si no encuentra servidor, usa `mongomock` (emulación en memoria) para que el notebook se ejecute igual. Para la sustentación se recomienda tener MongoDB local o Atlas activo:
+**Windows (Spark Streaming):** Spark necesita `winutils.exe` y `hadoop.dll` (Hadoop 3.3.6, repositorio [cdarlint/winutils](https://github.com/cdarlint/winutils)) en `C:\hadoop\bin`. El notebook configura `HADOOP_HOME` automáticamente si esa carpeta existe:
+
+```powershell
+New-Item -ItemType Directory -Force C:\hadoop\bin | Out-Null
+$base = "https://github.com/cdarlint/winutils/raw/master/hadoop-3.3.6/bin"
+Invoke-WebRequest "$base/winutils.exe" -OutFile C:\hadoop\bin\winutils.exe
+Invoke-WebRequest "$base/hadoop.dll"   -OutFile C:\hadoop\bin\hadoop.dll
+```
+
+**MongoDB:** el notebook se conecta a `mongodb://localhost:27017` o al valor de la variable de entorno `MONGO_URI` (por ejemplo, un clúster de MongoDB Atlas). Si no encuentra servidor, usa `mongomock` (emulación en memoria) para que el notebook se ejecute igual. Para la sustentación se recomienda tener MongoDB activo, por ejemplo con Docker:
+
+```bash
+docker run -d --name mongo-secop -p 27017:27017 mongo:7   # la primera vez
+docker start mongo-secop                                   # las siguientes veces
+```
+
+O con MongoDB Atlas:
 
 ```bash
 # Windows (PowerShell)
@@ -78,7 +100,7 @@ export MONGO_URI="mongodb+srv://usuario:clave@cluster.mongodb.net"
 - **6 gráficos de Plotly:** participación por año, serie mensual con las ventanas de Ley de Garantías, 15 entidades de mayor gasto, *treemap* del gasto por directa, proveedores con mayor valor y distribución por modalidad.
 - **Filtros:** rango de años, municipio, orden de la entidad (territorial/nacional), entidad y tipo de contrato.
 
-**Enlace público:** _pendiente — publicar en [Streamlit Community Cloud](https://streamlit.io/cloud) apuntando a `app.py` de este repositorio._
+**Enlace público:** https://contratacion-boyaca.streamlit.app
 
 ## Principales hallazgos
 
@@ -91,4 +113,4 @@ export MONGO_URI="mongodb+srv://usuario:clave@cluster.mongodb.net"
 
 | Herramienta | Tarea | Qué se verificó o corrigió |
 |---|---|---|
-| Claude (Anthropic) | Búsqueda del dataset y armado de la consulta filtrada a la API; borrador del notebook (PySpark, MongoDB, Streaming, visualizaciones), del dashboard y de este README; redacción inicial de las conclusiones. | _Completar por el equipo antes de entregar._ |
+| Claude (Anthropic) | Búsqueda del dataset y armado de la consulta filtrada a la API; borrador del notebook (PySpark, MongoDB, Streaming, visualizaciones), del dashboard y de este README; redacción inicial de las conclusiones. | Se ejecutó el notebook completo en un equipo Windows local con Java 21, MongoDB real en Docker (61.134 documentos insertados) y Spark Structured Streaming (12 micro-lotes), sin errores; se configuró Hadoop (winutils) para Windows; se verificó que Spark y pandas leen los mismos 124.434 registros; se desplegó y probó el dashboard en Streamlit Community Cloud con distintos filtros. _(Agregar aquí otras revisiones del equipo.)_ |
